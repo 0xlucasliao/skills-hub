@@ -137,6 +137,7 @@ async function enrich(submissionFilePath) {
   //    Response: { report_url, scan_id, ... }
   let agentguardReportUrl = null;
   let agentguardScanId    = null;
+  let agentguardResult    = null;
 
   if (process.env.AGENTGUARD_API_KEY) {
     console.log(`  Fetching repo content for AgentGuard scan`);
@@ -158,9 +159,17 @@ async function enrich(submissionFilePath) {
 
         if (agRes.ok) {
           const agData = await agRes.json();
-          agentguardReportUrl = agData.report_url ?? null;
-          agentguardScanId    = agData.scan_id    ?? null;
-          console.log(`  AgentGuard report: ${agentguardReportUrl ?? 'no report_url in response'}`);
+          const scan   = agData.data ?? {};
+          agentguardReportUrl = scan.reportUrl ?? null;
+          agentguardScanId    = scan.scanId    ?? null;
+          agentguardResult    = {
+            risk_score: scan.riskScore  ?? null,
+            risk_level: scan.riskLevel  ?? null,
+            verdict:    scan.verdict    ?? null,
+            summary:    scan.summary    ?? null,
+            threats:    scan.threats    ?? [],
+          };
+          console.log(`  AgentGuard report: ${agentguardReportUrl ?? 'no reportUrl in response'}`);
         } else {
           const errBody = await agRes.text();
           console.warn(`  ⚠ AgentGuard returned ${agRes.status}: ${errBody} — skipping`);
@@ -193,6 +202,7 @@ async function enrich(submissionFilePath) {
     latest_commit:         latestCommit,
     agentguard_scan_id:    agentguardScanId,
     agentguard_report_url: agentguardReportUrl,
+    agentguard_result:     agentguardResult,
     evaluated_at:          new Date().toISOString(),
   };
 
