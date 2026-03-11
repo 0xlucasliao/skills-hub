@@ -18,7 +18,14 @@
     "default_branch": "main"
   },
   "latest_commit": "4f6557b7f776c2ac6748027baadf18d44db67da7",
-  "agentguard_scan_id": null,
-  "agentguard_report_url": null,
-  "evaluated_at": "2026-03-11T16:21:17.539Z"
+  "agentguard_scan_id": "60f77a64-d05c-49c0-8ab6-29ba52e029a2",
+  "agentguard_report_url": "https://agentguard.gopluslabs.io/report/60f77a64-d05c-49c0-8ab6-29ba52e029a2",
+  "agentguard_result": {
+    "risk_score": 0,
+    "risk_level": "safe",
+    "verdict": "passed",
+    "summary": "No threats detected. Skill appears safe.",
+    "threats": []
+  },
+  "evaluated_at": "2026-03-11T16:26:58.437Z"
 }
