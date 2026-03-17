@@ -1,6 +1,33 @@
 {
   "name": "Vibers Code Review",
   "github_url": "https://github.com/marsiandeployer/vibers-action",
-  "category": ["code-review", "security", "github-actions", "ai"],
-  "description": "Human code review for AI-generated projects. Checks spec compliance, security (OWASP top 10), AI hallucinations, and submits PRs with fixes."
+  "category": [
+    "code-review",
+    "security",
+    "github-actions",
+    "ai"
+  ],
+  "description": "Human code review for AI-generated projects. Checks spec compliance, security (OWASP top 10), AI hallucinations, and submits PRs with fixes.",
+  "owner": {
+    "username": "marsiandeployer",
+    "display_name": "marsiandeployer",
+    "type": "User",
+    "profile_url": "https://github.com/marsiandeployer",
+    "avatar_url": "https://avatars.githubusercontent.com/u/129854151?v=4"
+  },
+  "repo": {
+    "stars": 1,
+    "default_branch": "master"
+  },
+  "latest_commit": "bfd3582f2922eacdbbe9ba7ebe30ecae787f56b0",
+  "agentguard_scan_id": "b37b90c7-0e28-4567-a54d-af250b7d3416",
+  "agentguard_report_url": "https://agentguard.gopluslabs.io/report/b37b90c7-0e28-4567-a54d-af250b7d3416",
+  "agentguard_result": {
+    "risk_score": 0,
+    "risk_level": "safe",
+    "verdict": "passed",
+    "summary": "No threats detected. Skill appears safe.",
+    "threats": []
+  },
+  "evaluated_at": "2026-03-17T09:51:47.363Z"
 }
