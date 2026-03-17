@@ -1,0 +1,6 @@
+{
+  "name": "QLWY Fortune Casting",
+  "github_url": "https://github.com/qlwy-xyz/fortune-skill",
+  "category": ["divination", "nft", "vrf", "ai", "i-ching"],
+  "description": "On-chain I Ching divination (链上算卦) powered by Binance Oracle VRF. Cast hexagrams, mint NFT fortunes, and get AI-powered readings via BAP-578 agent protocol."
+}
