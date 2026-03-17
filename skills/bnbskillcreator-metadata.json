@@ -1,6 +1,33 @@
 {
   "name": "BNB Skill Creator",
   "github_url": "https://github.com/ternencescott/bnbskillcreator",
-  "category": ["bnb-chain", "skill-creation", "github", "beginner-friendly"],
-  "description": "Help a beginner create a Codex/Claude skill, publish it in a public GitHub repository, and submit a valid metadata pull request to bnb-chain/skills-hub. Use this whenever the user wants to create a new skill for BNB Chain Skills Hub, submit a skill to skills-hub, prepare a metadata JSON, or needs end-to-end help with GitHub, forks, branches, commits, and pull requests."
+  "category": [
+    "bnb-chain",
+    "skill-creation",
+    "github",
+    "beginner-friendly"
+  ],
+  "description": "Help a beginner create a Codex/Claude skill, publish it in a public GitHub repository, and submit a valid metadata pull request to bnb-chain/skills-hub. Use this whenever the user wants to create a new skill for BNB Chain Skills Hub, submit a skill to skills-hub, prepare a metadata JSON, or needs end-to-end help with GitHub, forks, branches, commits, and pull requests.",
+  "owner": {
+    "username": "ternencescott",
+    "display_name": "ternencescott",
+    "type": "User",
+    "profile_url": "https://github.com/ternencescott",
+    "avatar_url": "https://avatars.githubusercontent.com/u/261173073?v=4"
+  },
+  "repo": {
+    "stars": 0,
+    "default_branch": "main"
+  },
+  "latest_commit": "ba019065bfca3965312bc06494e10bcf6bbf924f",
+  "agentguard_scan_id": "1b94d0af-04f9-4b81-a880-b950c91ef289",
+  "agentguard_report_url": "https://agentguard.gopluslabs.io/report/1b94d0af-04f9-4b81-a880-b950c91ef289",
+  "agentguard_result": {
+    "risk_score": 0,
+    "risk_level": "safe",
+    "verdict": "passed",
+    "summary": "No threats detected. Skill appears safe.",
+    "threats": []
+  },
+  "evaluated_at": "2026-03-17T09:34:09.720Z"
 }
