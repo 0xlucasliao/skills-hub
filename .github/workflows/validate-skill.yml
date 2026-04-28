@@ -1,0 +1,133 @@
+name: Validate Skill
+
+# Runs on every PR that touches a skill manifest.
+# READ-ONLY: this workflow never writes to the repository.
+# Enrichment (GitHub API + AgentGuard) happens in publish-skill.yml, post-merge.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "registry/skills/*/skill.json"
+
+jobs:
+  validate:
+    name: Validate Skill Manifest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read       # checkout only
+      pull-requests: write # post advisory comment
+
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # -----------------------------------------------------------------------
+      # Detect which skill manifests were added or changed in this PR.
+      # Uses a heredoc delimiter to pass multiline output without temp files.
+      # -----------------------------------------------------------------------
+      - name: Detect changed skill files
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" \
+            | grep -E '^registry/skills/[^/]+/skill\.json$' || true)
+
+          if [ -z "$FILES" ]; then
+            echo "No skill manifest files changed."
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changed skill manifests:"
+            echo "$FILES"
+            DELIM=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+            echo "files<<$DELIM" >> "$GITHUB_OUTPUT"
+            echo "$FILES"        >> "$GITHUB_OUTPUT"
+            echo "$DELIM"        >> "$GITHUB_OUTPUT"
+            echo "any=true"      >> "$GITHUB_OUTPUT"
+          fi
+
+      # -----------------------------------------------------------------------
+      # Run the validator. Captures exit code without failing the step so the
+      # comment step can always post results regardless of pass/fail.
+      # -----------------------------------------------------------------------
+      - name: Run schema validation
+        id: validate
+        if: steps.changed.outputs.any == 'true'
+        run: |
+          PASS=true
+          ARGS=""
+          while IFS= read -r file; do
+            [ -n "$file" ] && ARGS="$ARGS $file"
+          done <<< "${{ steps.changed.outputs.files }}"
+
+          node scripts/validate-skill.js $ARGS > /tmp/validation-results.json || PASS=false
+          echo "passed=$PASS" >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
+      # Post validation results as a PR comment.
+      # -----------------------------------------------------------------------
+      - name: Comment validation results on PR
+        if: steps.changed.outputs.any == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let results;
+            try {
+              results = JSON.parse(fs.readFileSync('/tmp/validation-results.json', 'utf8'));
+            } catch {
+              console.log('Could not parse validation results — skipping comment.');
+              return;
+            }
+
+            if (!Array.isArray(results) || !results.length) return;
+
+            const allPassed = results.every(r => r.ok);
+
+            const rows = results.map(r => {
+              const status = r.ok ? '✅ Pass' : '❌ Fail';
+              const issues = r.errors?.length
+                ? r.errors.map(e => `<li>${e}</li>`).join('')
+                : '';
+              const notes = issues ? `<ul>${issues}</ul>` : '—';
+              return `| \`${r.skillId}\` | ${status} | ${notes} |`;
+            });
+
+            const body = [
+              `## Skill Validation ${allPassed ? '✅ Passed' : '❌ Failed'}`,
+              '',
+              '| Skill ID | Status | Notes |',
+              '|----------|--------|-------|',
+              ...rows,
+              '',
+              allPassed
+                ? '> All fields are valid. A maintainer will review and merge.\n> Enrichment (GitHub data + AgentGuard scan) runs automatically after merge.'
+                : '> Fix the errors above and push again.',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      # -----------------------------------------------------------------------
+      # Fail the check if validation did not pass.
+      # -----------------------------------------------------------------------
+      - name: Fail if validation failed
+        if: steps.changed.outputs.any == 'true' && steps.validate.outputs.passed == 'false'
+        run: |
+          echo "Skill manifest validation failed. See PR comment for details."
+          exit 1

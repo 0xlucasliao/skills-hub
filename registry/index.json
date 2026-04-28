@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-04-28T00:00:00.000Z",
+  "count": 5,
+  "skills": [
+    {
+      "id": "bnbchain-skills",
+      "name": "bnbchain skills",
+      "description": "A skill for building on BNBChain - covers EVM interactions, smart contracts, tokens, NFTs, wallet operations, ERC-8004 agent tools, and Greenfield storage. Use it when developing or querying BNB Smart Chain and opBNB infrastructure via the BNB Chain MCP.",
+      "category": ["infrastructure", "blockchain"],
+      "github_url": "https://github.com/bnb-chain/bnbchain-skills",
+      "publisher": "bnb-chain",
+      "stars": 54,
+      "risk_level": "safe",
+      "published_at": "2026-03-11T16:26:58.437Z"
+    },
+    {
+      "id": "myriad-markets-skills",
+      "name": "Myriad Markets Skills",
+      "description": "Use the Myriad CLI to trade prediction markets on Myriad Markets",
+      "category": ["myriad-markets", "prediction-markets"],
+      "github_url": "https://github.com/MyriadProtocol/myriad-cli",
+      "publisher": "MyriadProtocol",
+      "stars": 4,
+      "risk_level": "low",
+      "published_at": "2026-03-17T09:59:38.031Z"
+    },
+    {
+      "id": "qlwy-fortune",
+      "name": "QLWY Fortune Casting",
+      "description": "On-chain I Ching divination (链上算卦) powered by Binance Oracle VRF. Cast hexagrams, mint NFT fortunes, and get AI-powered readings via BAP-578 agent protocol.",
+      "category": ["divination", "nft", "vrf", "ai", "i-ching"],
+      "github_url": "https://github.com/qlwy-xyz/fortune-skill",
+      "publisher": "qlwy-xyz",
+      "stars": 1,
+      "risk_level": "safe",
+      "published_at": "2026-03-17T09:51:27.853Z"
+    },
+    {
+      "id": "vibers-code-review",
+      "name": "Vibers Code Review",
+      "description": "Human code review for AI-generated projects. Checks spec compliance, security (OWASP top 10), AI hallucinations, and submits PRs with fixes.",
+      "category": ["code-review", "security", "github-actions", "ai"],
+      "github_url": "https://github.com/marsiandeployer/vibers-action",
+      "publisher": "marsiandeployer",
+      "stars": 1,
+      "risk_level": "safe",
+      "published_at": "2026-03-17T09:51:47.343Z"
+    },
+    {
+      "id": "bnb-skill-creator",
+      "name": "BNB Skill Creator",
+      "description": "Help a beginner create a Codex/Claude skill, publish it in a public GitHub repository, and submit a valid metadata pull request to bnb-chain/skills-hub. Use this whenever the user wants to create a new skill for BNB Chain Skills Hub, submit a skill to skills-hub, prepare a metadata JSON, or needs end-to-end help with GitHub, forks, branches, commits, and pull requests.",
+      "category": ["bnb-chain", "skill-creation", "github", "beginner-friendly"],
+      "github_url": "https://github.com/ternencescott/bnbskillcreator",
+      "publisher": "ternencescott",
+      "stars": 0,
+      "risk_level": "safe",
+      "published_at": "2026-03-17T09:34:09.720Z"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../schemas/skill.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "qlwy-fortune",
+  "name": "QLWY Fortune Casting",
+  "github_url": "https://github.com/qlwy-xyz/fortune-skill",
+  "category": [
+    "divination",
+    "nft",
+    "vrf",
+    "ai",
+    "i-ching"
+  ],
+  "description": "On-chain I Ching divination (链上算卦) powered by Binance Oracle VRF. Cast hexagrams, mint NFT fortunes, and get AI-powered readings via BAP-578 agent protocol.",
+  "publisher": {
+    "username": "qlwy-xyz",
+    "display_name": "qlwy-xyz",
+    "type": "User",
+    "profile_url": "https://github.com/qlwy-xyz",
+    "avatar_url": "https://avatars.githubusercontent.com/u/239737499?v=4"
+  },
+  "source": {
+    "commit": "8217ddfd5521f69b151442e2d9ede8eac41e48a2",
+    "fetched_at": "2026-03-17T09:51:27.853Z"
+  },
+  "repo": {
+    "stars": 1,
+    "default_branch": "main"
+  },
+  "security": {
+    "agentguard_scan_id": "7394b2af-d07d-4bb1-b7cb-f31033360e0e",
+    "agentguard_report_url": "https://agentguard.gopluslabs.io/report/7394b2af-d07d-4bb1-b7cb-f31033360e0e",
+    "agentguard_result": {
+      "risk_score": 0,
+      "risk_level": "safe",
+      "verdict": "passed",
+      "summary": "No threats detected. Skill appears safe.",
+      "threats": []
+    }
+  },
+  "published_at": "2026-03-17T09:51:27.853Z"
+}

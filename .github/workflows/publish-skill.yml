@@ -1,0 +1,96 @@
+name: Publish Skill
+
+# Runs after a skill manifest is merged into main.
+# WRITE access is granted here — nowhere else.
+# Enriches each manifest with live GitHub + AgentGuard data, then
+# regenerates registry/index.json and commits the result.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "registry/skills/*/skill.json"
+
+jobs:
+  publish:
+    name: Enrich & Publish Skills
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commit enriched manifests + index back to main
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # -----------------------------------------------------------------------
+      # Detect which skill manifests were changed by this push.
+      # Compares HEAD~1..HEAD (the merge commit diff).
+      # -----------------------------------------------------------------------
+      - name: Detect changed skill files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD \
+            | grep -E '^registry/skills/[^/]+/skill\.json$' || true)
+
+          if [ -z "$FILES" ]; then
+            echo "No skill manifest files in this push."
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Skill manifests to publish:"
+            echo "$FILES"
+            DELIM=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+            echo "files<<$DELIM" >> "$GITHUB_OUTPUT"
+            echo "$FILES"        >> "$GITHUB_OUTPUT"
+            echo "$DELIM"        >> "$GITHUB_OUTPUT"
+            echo "any=true"      >> "$GITHUB_OUTPUT"
+          fi
+
+      # -----------------------------------------------------------------------
+      # Enrich manifests and regenerate index.json.
+      # AGENTGUARD_API_KEY is required for the security scan; the workflow
+      # proceeds without it but logs a warning for each affected skill.
+      # -----------------------------------------------------------------------
+      - name: Enrich manifests and rebuild index
+        if: steps.changed.outputs.any == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENTGUARD_API_KEY: ${{ secrets.AGENTGUARD_API_KEY }}
+        run: |
+          ARGS=""
+          while IFS= read -r file; do
+            [ -n "$file" ] && ARGS="$ARGS $file"
+          done <<< "${{ steps.changed.outputs.files }}"
+
+          node scripts/publish-skill.js $ARGS
+
+      # -----------------------------------------------------------------------
+      # Commit enriched manifests + updated index back to main.
+      # Skips gracefully if the publish script produced no file changes.
+      # -----------------------------------------------------------------------
+      - name: Commit enriched manifests and index
+        if: steps.changed.outputs.any == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          while IFS= read -r file; do
+            [ -n "$file" ] && git add "$file"
+          done <<< "${{ steps.changed.outputs.files }}"
+          git add registry/index.json
+
+          git diff --staged --quiet && echo "Nothing new to commit." && exit 0
+
+          IDS=$(echo "${{ steps.changed.outputs.files }}" \
+            | grep -oE 'registry/skills/[^/]+' \
+            | sed 's|registry/skills/||' \
+            | sort -u \
+            | paste -sd ', ')
+          git commit -m "publish: enrich ${IDS}"
+          git push origin HEAD:main
